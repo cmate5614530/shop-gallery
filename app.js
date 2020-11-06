@@ -16,7 +16,7 @@ require('dotenv').config();
 require('./config/passport');
 var app = express();
 
-const MONGOURL = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/shop_gallery_local';
+const MONGOURL = process.env.MONGODB_URI || 'mongodb://localhost/shop_gallery';
 mongoose.connect(MONGOURL, { useNewUrlParser: true }, err => {
   console.error(err || `Connected to MongoDB: ${MONGOURL}`);
 });

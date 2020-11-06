@@ -36,7 +36,6 @@ router.post('/signin', passport.authenticate('local-signin', {
     req.session.oldUrl = null;
     res.redirect(oldUrl);
   } else {
-    alert("-------------");
     res.redirect('/');
   }
 });
