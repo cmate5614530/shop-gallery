@@ -1,0 +1,37 @@
+[{
+  "_id": {
+    "$oid": "5f960aa1fef0b20ff4fff47e"
+  },
+  "categoryID": "XXbgan82",
+  "subCategoryID": "s8kfvP9x",
+  "name": "test",
+  "imageUrl": "https://fashinbutikskw.b-cdn.net/category/a5adad113fb0019fb6356b1667524ae0.jpeg",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5f9a34b4fef0b20ff4fff95d"
+  },
+  "categoryID": "bKcvjpXQ",
+  "subCategoryID": "w1S1rGlQ",
+  "name": "Women Shoes",
+  "imageUrl": "https://fashinbutikskw.b-cdn.net/category/b4018bc893a290b4cca3c713b83374ba.jpg",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5fa4ba3b12f8fe058b2745ec"
+  },
+  "categoryID": "P6PRhlWS",
+  "subCategoryID": "R6fxtIZ8",
+  "name": "Test",
+  "imageUrl": "https://fashinbutikskw.b-cdn.net/category/245cc24d4f429990ab857ccd9aaa7464.jpg",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5fa4c24a12f8fe058b2745f8"
+  },
+  "categoryID": "XXbgan82",
+  "subCategoryID": "aHJaVQXX",
+  "name": "test1",
+  "imageUrl": "https://fashinbutikskw.b-cdn.net/category/c848c50781bc0c4365c19cc3f09981ce.PNG",
+  "__v": 0
+}]

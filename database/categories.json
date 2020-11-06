@@ -1,0 +1,25 @@
+[{
+  "_id": {
+    "$oid": "5f8ec1984d44461886f3ded4"
+  },
+  "categoryID": "P6PRhlWS",
+  "name": "test-first",
+  "imageUrl": "https://fashinbutikskw.b-cdn.net/category/c7df440b695ff76f5b336d5dad68106e.gif",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5f8f94874d44461886f3dfc6"
+  },
+  "categoryID": "XXbgan82",
+  "name": "asd",
+  "imageUrl": "https://fashinbutikskw.b-cdn.net/category/c1247a303ae87ad8bbc40d8551802eb5.jpg",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5f9a346dfef0b20ff4fff95c"
+  },
+  "categoryID": "bKcvjpXQ",
+  "name": "Shoes",
+  "imageUrl": "https://fashinbutikskw.b-cdn.net/category/e756c65d9f618a83789ff1b356bbd66d.jpg",
+  "__v": 0
+}]
