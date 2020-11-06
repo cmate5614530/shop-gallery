@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <style>
+        .main-wrap {
+            padding: 50px;
+        }
+
+        .header {
+            text-align: center;
+        }
+
+        .detail tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+        .detail tr:nth-child(even) td {
+            outline: solid #dddddd;
+        }
+    </style>
+</head>
+
+<body style="font-size: 10px;">
+    <div class="main-wrap" style="padding: 50px;">
+        <div class="header" style="text-align: center;">
+            <h2>Invoice</h2>
+        </div>
+        <table style="width: 100%; text-align: left;">
+            <tbody>
+                <tr>
+                    <td style="padding: 10px;">
+                        <table style="text-align: left">
+                            <tbody>
+                                <tr style="margin-top:5px;">
+                                    <td style="padding-left: auto; padding-right: 30px;">First Name: <strong
+                                            style="font-size: 12px; font-weight: 900;"><%= data.user.firstName%></strong>
+                                    </td>
+                                    <td style="padding-left: 30px; padding-right: auto;">Email: <strong
+                                            style="font-size: 12px; font-weight: 900;"><%= data.user.email%></strong>
+                                    </td>
+                                </tr>
+                                <br>
+                                <tr style="margin-top:5px; padding-top: 12px;">
+                                    <td style="padding-left: auto; padding-right: 30px;">Last Name: <strong
+                                            style="font-size: 12px; font-weight: 900;"><%= data.user.lastName%></strong>
+                                    </td>
+                                    <td style="padding-left: 30px; padding-right: auto;">Number: <strong
+                                            style="font-size: 12px; font-weight: 900;"><%= data.user.phone%></strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Address: <strong
+                                            style="font-size: 12px; font-weight: 900;"><%= data.user.address%></strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div>
+            <h2>Detail:</h2>
+            <table style="width: 100%; text-align: center;" class="detail">
+                <thead>
+                    <th>No.</th>
+                    <th>Picture</th>
+                    <th>Link</th>
+                    <th>Price</th>
+                    <th>Shipping Cost</th>
+                    <th>Color</th>
+                    <th>Size</th>
+                    <th>Quantity</th>
+                </thead>
+                <tbody style="padding: 10px; outline: solid 1px gray;">
+                    <% for(let i=0; i< data.data.length; i++) {let item = data.data[i];%>
+                    <tr>
+                        <td><%= i+1 %></td>
+                        <td><img src="<%= item.imgUrl%>" alt="img" width="55px"></td>
+                        <td><a href="<%= item.detail_url%>" target="_blank">View in Site</a></td>
+                        <td><%= item.price * item.qty%></td>
+                        <td><%= item.shippingCost%></td>
+                        <td><%= item.color%></td>
+                        <td><%= item.size%></td>
+                        <td><%= item.qty%></td>
+                    </tr>
+                    <%}%>
+                </tbody>
+            </table>
+        </div>
+        <div style="padding: 10px;">
+            <h3>Total In Yuan: <strong style="color: indianred; font-size: 12px;"> ¥ <%= data.totalYuan%></strong></h3>
+            <h3>Total Commision: <strong style="color: indianred; font-size: 12px;">¥ <%= data.totalCommition%></strong></h3>
+            <h3>Total In Naira: <strong style="color: indianred; font-size: 12px;">₦ <%= data.totalNaira%></strong></h3>
+        </div>
+        <div><small style="float: right;"><strong>Created:</strong>  <%= data.currentTime%></small></div>
+    </div>
+</body>
+
+</html>

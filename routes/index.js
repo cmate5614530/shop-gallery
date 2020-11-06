@@ -1,0 +1,59 @@
+var express = require('express');
+var router = express.Router();
+var mainController = require('../controllers/main.controller')
+var main = new mainController();
+var bodyParser = require('body-parser');
+var multer = require('multer');
+var upload = multer({ dest: 'temp/', })
+
+router.use(bodyParser.json());
+/* GET home page. */
+router.get('/', isLoggedIn, main.index);
+
+router.get('/signin', function (req, res, next) {
+  res.render('auth/signin');
+});
+
+router.get('/signup', function (req, res, next) {
+  // let messages = req.flash('error')
+  // console.log("messages", messages)
+  // res.render('auth/signup', { messages: messages, hasError: messages.length > 0 });
+  res.redirect('/signin');
+});
+
+// POST
+router.post('/createCategory', isLoggedIn, upload.single('categoryImage'), main.createCategory)
+router.post('/getProducts', isLoggedIn, main.getProducts);
+router.post('/viewProductDetail', isLoggedIn, main.viewProductDetail);
+router.post('/category/createSubCategory', upload.single('subCategoryImage'), isLoggedIn, main.createSubCategory)
+
+/* SEEDs */
+router.get('/seeds', isLoggedIn, main.seeds)
+//GET 
+router.get('/getCategory', isLoggedIn, main.getCategory);
+// router.get('/getSubCategory', isLoggedIn, main.getSubCategory);
+router.get('/deleteCategory/:id', isLoggedIn, main.deleteCategory);
+router.get('/category/:categoryID', isLoggedIn, main.subCategory);
+router.get('/category/:categoryID/subCategory/:subCategoryID', main.productPage)
+
+router.get('/create-invoice', isLoggedIn, main.createInvoice);
+router.post('/create-invoice', isLoggedIn, main.createInvoice);
+router.post('/editProduct', isLoggedIn, main.editProduct)
+
+
+router.get('/getCategories', main.getCategories)
+router.post('/createProductDB', main.createProductDB);
+router.post('/getSubCategory', main.getSubCategory);
+// router.post('/getSubCategories', main.getSubCategory)
+
+router.get('/invoice/:id', isLoggedIn, main.download);
+
+module.exports = router;
+
+function isLoggedIn(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  // req.session.oldUrl = req.url;
+  res.redirect('/signin');
+}

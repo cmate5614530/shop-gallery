@@ -1,0 +1,178 @@
+<% layout('../layout/app') -%>
+
+<div class="home-wrap" id="subCategory">
+  <div class="font-up-bold text-uppercase">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb cyan lighten-4">
+        <li class="breadcrumb-item"><a class="" href="/">Home</a></li>
+        <li class="breadcrumb-item active">Category</li>
+      </ol>
+    </nav>
+  </div>
+  <div class="modal fade" id="subCategoryCreateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100 font-weight-bold">Create Subcategory</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body mx-3">
+          <form id="categoryForm" class="needs-validation" novalidate>
+            <div class="md-form mb-5">
+              <i class="fab fa-buffer prefix grey-text"></i>
+              <input type="text" id="subCategoryName" class="form-control validate" name="subCategoryName" required>
+              <label data-error="wrong" data-success="right" for="subCategoryName">Subcategory Name</label>
+            </div>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="subCategoryImage">Subategory Image</span>
+              </div>
+              <div class="custom-file">
+                <input accept="image/*" type="file" class="custom-file-input" id="fileInput"
+                  aria-describedby="subCategoryImage" name="fileInput" required>
+                <label class="custom-file-label" for="fileInput">Choose file</label>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer d-flex justify-content-center">
+          <button class="btn btn-default" @click.prevent="createSubCategory()">Create</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="text-right">
+    <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#subCategoryCreateModal">Create
+      Subcategory</a>
+  </div>
+  <div class="mt-3 row" v-if="categoryData.length">
+    <div v-for="(item, index) in categoryData" :key="index" class="col-4 mt-4">
+      <div class="card">
+        <div class="view overlay">
+          <img class="card-img-top" :src="item.imageUrl" height="300" alt="Card image cap">
+          <a :href="href + '/subCategory/'+item.subCategoryID">
+            <div class="mask rgba-white-slight waves-effect waves-light"></div>
+          </a>
+        </div>
+        <div class="card-body d-flex align-items-center">
+          <h3 class="card-title">{{item.name}}</h3>
+          <button type="button" class="btn btn-danger waves-effect btn-sm ml-auto"
+            @click.prevent="deleteCategory(item.categoryID)"><i class="fas fa-trash-alt"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <vue-snotify></vue-snotify>
+</div>
+<script>
+  new Vue({
+    el: "#subCategory",
+    data() {
+      return {
+        loader: {},
+        categoryData: [],
+        categoryID: '',
+        href: ''
+      }
+    },
+    methods: {
+      openLoader() {
+        this.loader = this.$loading.show({
+          loader: 'dots',
+          backgroundColor: '#ffffff',
+          opacity: 0.5,
+          transparence: 0.5
+        });
+      },
+      createSubCategory() {
+        var forms = document.getElementsByClassName('needs-validation');
+        this.openLoader()
+        var validation = Array.prototype.filter.call(forms, function (form) {
+          if (form.checkValidity() !== false) {
+            $('#subCategoryCreateModal').hide();
+            let formData = new FormData()
+            let image = $('#fileInput').get(0).files[0];
+            formData.append('subCategoryImage', image);
+            formData.append('subCategoryName', $('#subCategoryName').val());
+            let param = new URL(window.location.href).pathname
+            let categoryID = param.split('category/')[1];
+            formData.append('categoryID', categoryID)
+            $.ajax({
+              method: "POST",
+              url: "createSubCategory",
+              data: formData,
+              processData: false,
+              contentType: false,
+            }).done((res) => {
+              if (res.status) {
+                this.Snotify.success(res.msg, {
+                  position: 'rightTop'
+                });
+              }
+              location.reload()
+            });
+          } else {
+            $('.vld-overlay').removeClass('is-active')
+            this.Snotify.warning('Please insert valid value.', {
+              position: 'rightTop'
+            });
+          }
+          form.classList.add('was-validated');
+        });
+      },
+      deleteCategory(id) {
+        swal({
+          title: "Confirm",
+          text: "Are you sure to delete this Item?",
+          icon: "warning",
+          button: "OK",
+        })
+          .then((willDelete) => {
+            if (willDelete) {
+              $.ajax({
+                url: `deleteCategory/${id}`,
+                method: 'GET'
+              }).done(async (res) => {
+                this.categoryData = this.categoryData.filter(x => {
+                  return x.categoryID != id
+                })
+              })
+            }
+          }).catch((err) => {
+
+          });
+      },
+      getSubCategory() {
+        this.openLoader()
+        $.ajax({
+          method: "POST",
+          url: "/getSubCategory",
+          data: {
+            categoryID: this.categoryID
+          }
+        }).done((res) => {
+          this.loader.hide()
+          if (res.status) {
+            this.categoryData = res.data
+          } else {
+            this.Snotify.error(res.msg, {
+              position: 'rightTop'
+            })
+          }
+        })
+
+      }
+    },
+    mounted() {
+      let param = new URL(window.location.href).pathname;
+      this.href = param
+      this.categoryID = param.split('category/')[1];
+      setTimeout(() => {
+        this.getSubCategory()
+      }, 200);
+    },
+  })
+</script>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>1688 Auto Invoice Generator</title>
+    <!-- MDB icon -->
+    <link rel="icon" href="img/fav-icon.png" type="image/x-icon">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- Material Design Bootstrap -->
+    <link rel="stylesheet" href="css/mdb.min.css">
+    <!-- Your custom styles (optional) -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="auth-form">
+        <form class=" border border-light p-5" action="/users/signup" method="POST" id="signupForm">
+            <p class="h4 mb-4">Sign up</p>
+            <%if (hasError) {%>
+            <% for(let i=0; i< messages.length; i++) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <%= messages[i]%>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <%}%>
+            <%}%>
+            <div class="form-row mb-2">
+                <div class="col">
+                    <label for="firstName">First Name</label>
+                    <input type="text" name="firstName" id="firstName" class="form-control" placeholder="First name"
+                       required >
+                </div>
+                <div class="col">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" name="lastName" id="lastName" class="form-control" placeholder="Last name"
+                        required>
+                </div>
+            </div>
+            <label for="email">E-mail</label>
+            <input type="email" name="email" id="email" class="form-control mb-2" placeholder="E-mail" required>
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
+            <small class="form-text text-muted mb-1">
+                At least 8 characters and 1 digit
+            </small>
+            <label for="confirm">Confirm Password</label>
+            <input type="password" id="confirm" class="form-control" placeholder="Confirm Password" data-rule-equalTo="#password"
+            aria-describedby="confirm">
+            <small class="form-text text-muted mt-1 text-danger d-none" id="matchError">Password Does not match</small>
+            <!-- <div class="custom-control custom-checkbox">onkeypress="checkMatch(event)"
+                <input type="checkbox" class="custom-control-input" id="defaultRegisterFormNewsletter">
+                <label class="custom-control-label" for="defaultRegisterFormNewsletter">Subscribe to our
+                    newsletter</label>
+            </div> -->
+            <button class="btn btn-info my-4 btn-block" type="submit" id="signup">Sign Up</button>
+            <p>Have you account ?
+                <a href="/signin">Sign In</a>
+            </p>
+            <!-- <p>or sign up with:</p>
+
+            <a href="#" class="mx-2" role="button"><i class="fab fa-facebook-f light-blue-text"></i></a>
+            <a href="#" class="mx-2" role="button"><i class="fab fa-twitter light-blue-text"></i></a>
+            <a href="#" class="mx-2" role="button"><i class="fab fa-linkedin-in light-blue-text"></i></a>
+            <a href="#" class="mx-2" role="button"><i class="fab fa-github light-blue-text"></i></a> -->
+        </form>
+    </div>
+    <!-- Default form register -->
+    <!-- jQuery -->
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="js/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="js/mdb.min.js"></script>
+    <!-- Your custom scripts (optional) -->
+    <script type="text/javascript"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+    <script>
+        $('#signupForm').validate({
+            rules: {
+                password : {
+                    minlength : 8
+                },
+                confirm : {
+                    minlength : 8,
+                    equalTo : "#password"
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

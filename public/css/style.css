@@ -1,0 +1,108 @@
+.auth-form {
+    max-width: 350px;
+    min-width: 250px;
+    align-items: center;
+    margin: auto;
+    margin-top: 100px;
+}
+.pt-3-half {
+    padding-top: 1.4rem;
+}
+.auth-form label {
+    font-size: 12px;
+}
+.danger {
+    color: red;
+}
+.prev-image {
+    cursor: pointer;
+}
+.gen-invoice {
+    margin-left: auto;
+}
+.invoice-header {
+    display: flex;
+}
+.dropdown-info .dropdown-item:hover {
+    background-color: #33b5e5 !important;
+    border-radius: 0.125rem;
+    -webkit-box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
+    box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
+    color: white;
+}
+
+.dropdown .dropdown-menu,
+.dropup .dropdown-menu,
+.dropleft .dropdown-menu,
+.dropright .dropdown-menu {
+    padding: 0.5rem;
+}
+
+.nav-item .dropdown {
+    margin-left: auto !important;
+}
+
+.main-wrap {
+    padding: 30px;
+}
+label.error {
+    color: red;
+}
+.create-invoice {
+    max-width: 1000px;
+    min-width: 500px;
+    margin: auto;
+}
+.home-wrap {
+    max-width: 1000px;
+    min-width: 500px;
+    margin: auto;
+    margin-top: 35px;
+}
+.product-wrap {
+    max-width: 1200px;
+    min-width: 500px;
+    margin: auto;
+    margin-top: 35px;
+}
+.create-invoice input#phone::-webkit-outer-spin-button,
+input#phone::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.create-invoice input#phone[type="number"] {
+    -moz-appearance: textfield;
+}
+.invoice-header {
+    font-weight: 900;
+}
+.add-to-invoice {
+    margin-left: auto;
+}
+
+.navbar .dropdown-menu .dropdown-item:hover {
+    color: white !important;
+}
+
+.btn-rounded {
+    border-radius: 10em;
+}
+.detail-name {
+    font-size: 12px;
+}
+.mfp-figure figure {
+    width: 600px;
+}
+
+.mfp-figure img {
+    width: 100% !important;
+}
+
+#navbar {
+    position: fixed;
+    width: 100%;
+    z-index: 999;
+}
+.navbar-brand {
+    z-index: 1000;
+}
