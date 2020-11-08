@@ -6,8 +6,9 @@
                 <li class="breadcrumb-item"><a class="" href="/">Home</a></li>
                 <li class="breadcrumb-item"><a class=""
                         :href="'/category/' + categoryID">{{breadcrumb.category.name}}</a></li>
-                <li class="breadcrumb-item active">{{breadcrumb.subCategory.name}}</li>
-            </ol>
+                <li class="breadcrumb-item"><a class="" :href="'/category/' + categoryID + '/subCategory/' + subCategoryID">{{breadcrumb.subCategory.name}}</a></li>
+                <li class="breadcrumb-item active">{{breadcrumb.subSubCategory.name}}/</li>
+            </ol>   
         </nav>
     </div>
     <div class="row" v-show="!detailMode">
@@ -148,6 +149,7 @@
                 paginationArray: [],
                 categoryID: '',
                 subCategoryID: '',
+                subSubCategoryID: '',
                 loader: {},
                 index: 0,
                 error:''
@@ -189,6 +191,7 @@
                     data: {
                         categoryID: this.categoryID,
                         subCategoryID: this.subCategoryID,
+                        subSubCategoryID: this.subSubCategoryID,
                         page,
                     }
                 }).done(res => {
@@ -265,7 +268,8 @@
             let param = new URL(window.location.href).pathname
             param = param.split('/subCategory/')
             this.categoryID = param[0].split('category/')[1];
-            this.subCategoryID = param[1]
+            this.subCategoryID = param[1].split('/subSubCategory/')[0];
+            this.subSubCategoryID = param[1].split('/subSubCategory/')[1];
             setTimeout(() => {
                 this.getProducts(1);
             }, 200);

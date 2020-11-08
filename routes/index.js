@@ -33,8 +33,15 @@ router.get('/seeds', isLoggedIn, main.seeds)
 router.get('/getCategory', isLoggedIn, main.getCategory);
 // router.get('/getSubCategory', isLoggedIn, main.getSubCategory);
 router.get('/deleteCategory/:id', isLoggedIn, main.deleteCategory);
+
 router.get('/category/:categoryID', isLoggedIn, main.subCategory);
-router.get('/category/:categoryID/subCategory/:subCategoryID', main.productPage)
+//router.get('/category/:categoryID/subCategory/:subCategoryID', main.productPage)
+
+router.post('/category/:categoryID/subCategory/createSubSubCategory', upload.single('subSubCategoryImage'), isLoggedIn, main.createSubSubcategory)
+router.post('/getSubSubCategory', main.getSubSubCategory);
+router.get('/category/:categoryID/subCategory/:subCategoryID', isLoggedIn, main.subSubCategory);
+router.get('/category/:categoryID/subCategory/:subCategoryID/subSubCategory/:subSubCategoryID', main.productPage);
+router.get('/category/:categoryID/subCategory/deleteSubSubCategory/:id', isLoggedIn, main.deleteSubSubCategory);
 
 router.get('/create-invoice', isLoggedIn, main.createInvoice);
 router.post('/create-invoice', isLoggedIn, main.createInvoice);

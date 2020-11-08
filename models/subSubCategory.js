@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var products = mongoose.Schema({
+var subSubCategory = mongoose.Schema({
     categoryID: {
         type: String,
         required: true
@@ -11,24 +11,16 @@ var products = mongoose.Schema({
     },
     subSubCategoryID: {
         type:String,
-        required: false
+        required: true
     },
     name: {
         type: String,
         required: true
     },
-    description: {
+    imageUrl: {
         type: String,
         required: true
-    },
-    images: {
-        type: Array,
-        default: []
-    }
-}, {
-    timestamps: {
-        createdAt: 'created_at'
     }
 }
 )
-module.exports = mongoose.model('products', products);
+module.exports = mongoose.model('subSubCategory', subSubCategory);

@@ -6,6 +6,7 @@ var AWS = require('aws-sdk');
 var bucket = new AWS.S3();
 var categoryModel = require('../models/category');
 var subCategoryModel = require('../models/subCategory')
+var subSubCategoryModel = require('../models/subSubCategory')
 var goodsModel = require('../models/goods');
 var productsModel = require('../models/products')
 const BunnyStorage = require('bunnycdn-storage').default;
@@ -35,24 +36,30 @@ class mainController {
     subCategory(req, res) {
         res.render('pages/subCategory');
     }
+    subSubCategory(req, res){
+        res.render('pages/subsubCategory');
+    }
     productPage(req, res) {
         res.render('pages/productView')
     }
     async getProducts(req, res) {
-        let { categoryID, subCategoryID, page } = req.body;
+        console.log('--maincontroller line 46 getProducs--', req.body);
+        let { categoryID, subCategoryID, subSubCategoryID, page } = req.body;
         page = parseInt(page)
         if (page == 1) {
             let category = await categoryModel.findOne({ categoryID })
             let subCategory = await subCategoryModel.findOne({ subCategoryID });
+            let subSubCategory = await subSubCategoryModel.findOne({ subSubCategoryID});
             let breadcrumb = {
                 category,
-                subCategory
+                subCategory,
+                subSubCategory
             }
-            let productsCount = await productsModel.find({ categoryID, subCategoryID }).countDocuments()
-            let products = await productsModel.find({ categoryID, subCategoryID }).limit(24)
+            let productsCount = await productsModel.find({ categoryID, subCategoryID, subSubCategoryID }).countDocuments()
+            let products = await productsModel.find({ categoryID, subCategoryID, subSubCategoryID }).limit(24)
             res.json({ status: true, data: products, productsCount, breadcrumb });
         } else {
-            let products = await productsModel.find({ categoryID, subCategoryID }).skip((page - 1) * 24).limit(24)
+            let products = await productsModel.find({ categoryID, subCategoryID, subSubCategoryID }).skip((page - 1) * 24).limit(24)
             res.json({ status: true, data: products });
         }
     }
@@ -113,6 +120,37 @@ class mainController {
             res.json({ status: false, msg: "Some error was caused." });
         }
     }
+    
+    async createSubSubcategory(req, res) {
+        let image = fs.readFileSync(req.file.path);
+        let key = `category/subCategory/${req.file.filename}.${req.file.originalname.split('.')[req.file.originalname.split('.').length - 1]}`
+        let response = await bunnyStorage.upload(image, key);
+        let { data } = response;
+        console.log("mainController -> createSubSubCategory -> data", data)
+        if (data.Message == 'File uploaded.') {
+            let subSubCategoryID = generateRandomString(8);
+            let subSubCategory = {
+                categoryID: req.body.categoryID,
+                subCategoryID: req.body.subCategoryID,
+                subSubCategoryID,
+                name: req.body.subSubCategoryName,
+                imageUrl: `${process.env.PULL_ZONE_URL}${key}`
+            }
+            await subSubCategoryModel.create(subSubCategory)
+            fs.unlinkSync(`${req.file.path}`)
+            res.json({ status: true, msg: "SubSubCategory was Created" });;
+        } else {
+            res.json({ status: false, msg: "Some error was caused." });
+        }
+    }
+
+    async deleteSubSubCategory(req, res) {
+        let { categoryID, id } = req.params;
+        await subSubCategoryModel.findOneAndDelete({ subSubCategoryID:id });
+        await productsModel.deleteMany({subSubCategoryID: id});
+        res.json({ status: true, msg: "subSubCategory was deleted" });
+    }
+
     async createProductDB(req, res) {
         let data = req.body;
         console.log("mainController -> createProductDB -> data", data)
@@ -136,6 +174,15 @@ class mainController {
         let { categoryID } = req.body
         let data = await subCategoryModel.find({ categoryID: categoryID });
         res.json({ status: true, data });
+    }
+    async getSubSubCategory(req, res){
+        let { categoryID, subCategoryID} = req.body;
+        let categoryOne = await categoryModel.findOne({categoryID: categoryID});
+        let categoryName = categoryOne.name;
+        let subCategoryOne = await subCategoryModel.findOne({categoryID: categoryID, subCategoryID: subCategoryID});
+        let subCategoryName = subCategoryOne.name;
+        let data =await subSubCategoryModel.find({categoryID: categoryID, subCategoryID: subCategoryID });
+        res.json({ status: true, data, categoryName, subCategoryName});
     }
     // async getSubCategories(req, res) {
     //     let categoryID = req.body.category;
