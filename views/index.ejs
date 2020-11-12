@@ -78,7 +78,7 @@
     },
     computed:{
         filteredList(){
-          return this.categoryData.filter(item=>item.name.includes(this.searchCategory)==true)
+          return this.categoryData.filter(item=>item.name.toLowerCase().includes(this.searchCategory.toLowerCase())==true)
         }
       },
     methods: {

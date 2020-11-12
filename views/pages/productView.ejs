@@ -11,11 +11,16 @@
             </ol>   
         </nav>
     </div>
+
+    <div class="text-left">
+        <input type="text" v-model="searchAlbum" id="searchAlbum" name="searchAlbum"  placeholder="Search album...">
+    </div>
+    <br>
     <div class="row" v-show="!detailMode">
-        <div v-for="(item, index) in products" :key="index" class="col-3 col-sm-2 mb-2">
+        <div v-for="(item, index) in filteredList" :key="index" class="col-3 col-sm-2 mb-2">
             <div class="card">
                 <div class="view overlay">
-                    <img class="card-img-top" :src="item.images[0]" height="170" alt="Card image cap">
+                    <img class="card-img-top" :src="item.images[item.cover!==undefined?item.cover:0]" height="170" alt="Card image cap">
                     <a @click.prevent="viewDetail(item, index)">
                         <div class="mask rgba-white-slight"></div>
                     </a>
@@ -84,6 +89,33 @@
                             <textarea class="form-control z-depth-1" id="productDescription" rows="8"
                                 placeholder="Write something here..." v-model="detailData.description"></textarea>
                         </div>
+                        <div class="form-group">
+                            <label for="tag">Tag</label>
+                            <input type="text" class="form-control" id="tag" v-model="detailData.tag"
+                                placeholder="Please enter tag...">
+                        </div>
+                        <div class="form-group">
+                            <label for="path">Path</label>
+                            <div name="path">
+                                <select v-model="editCategory" @change="onCategoryChange($event)" :required="!editCategory">
+                                    <option disabled value="">Category</option>
+                                    <option v-if="categories" v-for="cat in categories" v-bind:value="cat.categoryID">{{cat.name}}</option>
+                                </select>
+                                <select v-model="editSubCategory" @change="onSubCategoryChange($event)" :required="!editSubCategory">
+                                    <option disabled value="">SubCategory</option>
+                                    <option v-if="subCategories" v-for="subcat in subCategories" v-bind:value="subcat.subCategoryID">{{subcat.name}}</option>
+                                </select>
+                                <select v-model="editSubSubCategory" @change="onSubSubCategoryChange($event)" :required="!editSubSubCategory">
+                                    <option disabled value="">SubSubCategory</option>
+                                    <option v-if="subSubCategories" v-for="subsubcat in subSubCategories" v-bind:value="subsubcat.subSubCategoryID">{{subsubcat.name}}</option>
+                                </select>
+                            </div>
+                            <p v-if="errors.length">
+                                <ul style="color:red;">
+                                  <li v-for="error in errors">{{ error }}</li>
+                                </ul>
+                              </p>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer d-flex justify-content-center">
@@ -98,7 +130,7 @@
         </div>
         <div class="row">
             <div class="col-2">
-                <img :src="detailData.images[0]" alt="thumbnail" width="100%">
+                <img :src="detailData.images[detailData.cover!==undefined?detailData.cover:0]" alt="thumbnail" width="100%">
             </div>
             <div class="col-10">
                 <h3>{{detailData.name}} | {{detailData.images.length}}</h3>
@@ -107,6 +139,8 @@
                     <div>
                         <a href="javascript:void(0)" class="btn btn-purple btn-rounded" data-toggle="modal"
                             data-target="#productEdit">Edit</a>
+                        <label  v-if="detailData.tag" for="tagname">&nbsp;&nbsp;&nbsp;Search albums by tag:&nbsp;&nbsp;</label>
+                        <button class="btn btn-purple btn-rounded" v-if="detailData.tag" @click.prevent="searchByTag(detailData.tag)">{{detailData.tag}}</button>
                     </div>
                     <div class="btn-group ml-auto" role="group" aria-label="options">
                         <button type="button" class="btn btn-purple btn-rounded" @click.prevent="changeView('col-2')"><i
@@ -122,12 +156,14 @@
         </div>
         <div class="row mt-5 gallery">
             <div :class="viewMode" v-for="(item, index) in detailData.images" :key="index">
+                
                 <a :href="item">
                     <img :src="item" alt="image" width="100%" class="p-2">
                 </a>
                 <div v-if="viewMode != 'col-2'">
+                    <button @click.prevent="setCover(index, detailData._id)" type="button" class="btn btn-pink btn-rounded">&nbsp;&nbsp;Set as cover image</button>
                     <p class="detail-name pl-2 m-0">{{item.split('/')[item.split('/').length-1]}}</p>
-                    <p class="detail-date pl-2 m-0">{{changeDateformat(detailData.created_at)}}</p>
+                    <p class="detail-date pl-2 m-0">{{changeDateformat(detailData.created_at)}}</p>         
                 </div>
             </div>
         </div>
@@ -152,28 +188,87 @@
                 subSubCategoryID: '',
                 loader: {},
                 index: 0,
-                error:''
+                error:'',
+                searchAlbum:'',
+                tag:'',
+                editCategory:'',
+                editSubCategory:'',
+                editSubSubCategory:'',
+                categories:'',
+                subCategories:'',
+                subSubCategories:'',
+                errors:[]
+            }
+        },
+        computed:{
+            filteredList(){
+              return this.products.filter(item=>item.name.toLowerCase().includes(this.searchAlbum.toLowerCase())==true)
             }
         },
         methods: {
+            onCategoryChange(event){
+                console.log("---category changed into this--", event.target.value);
+                this.getSubCategories(event.target.value);
+                this.editSubCategory ='';
+                this.editSubSubCategory = '';
+            },
+            onSubCategoryChange(event){
+                console.log("---subCategory changed into this---", event.target.value);
+                this.getSubSubCategories(this.editCategory, event.target.value);
+                console.log(this.subCategories)
+                this.editSubSubCategory = '';
+            },
+            onSubSubCategoryChange(event){
+                console.log("--SubSubCategory changed into this---", event.target.value);
+            },
+            setCover(cover, _id){
+                this.openLoader();
+                $.ajax({
+                    method:"POST",
+                    url:"/setCover",
+                    data:{
+                        cover, _id
+                    }
+                }).done(res=>{                   
+                    this.loader.hide();
+                    location.reload();
+                })
+            },
             saveChanges() {
                 this.products[this.index] = this.detailData;
-                this.openLoader();
-                let { name, description, _id } = this.detailData;
-                $.ajax({
-                    method: "POST",
-                    url: "/editProduct",
-                    data: {
-                        name, description, _id
+                let categoryID = this.editCategory;
+                let subCategoryID = this.editSubCategory;
+                let subSubCategoryID = this.editSubSubCategory;
+                this.errors = [];
+                if(!this.editCategory || !this.editSubCategory || !this.editSubSubCategory){
+                    if(!this.editCategory){
+                        this.errors.push("Category required.");
                     }
-                }).done(res => {
-                    this.loader.hide();
-                    if (res.status) {
-                        $('#productEdit').modal('hide')
-                    } else {
-                        this.error = 'Something went wrong'
+                    if(!this.editSubCategory){
+                        this.errors.push("SubCategory required.");
                     }
-                })
+                    if(!this.editSubSubCategory){
+                        this.errors.push("SubSubCategory required.");
+                    }
+                }else{
+                    this.openLoader();
+                    let { name, description, _id, tag } = this.detailData;
+                    $.ajax({
+                        method: "POST",
+                        url: "/editProduct",
+                        data: {
+                            name, description, _id, tag, categoryID, subCategoryID, subSubCategoryID
+                        }
+                    }).done(res => {
+                        this.loader.hide();
+                        if (res.status) {
+                            $('#productEdit').modal('hide')
+                            location.reload();
+                        } else {
+                            this.error = 'Something went wrong'
+                        }
+                    })
+                }
             },
             openLoader() {
                 this.loader = this.$loading.show({
@@ -186,12 +281,13 @@
             getProducts(page) {
                 this.openLoader()
                 $.ajax({
-                    method: "POST",
+                    method: "POST", 
                     url: `/getProducts`,
                     data: {
                         categoryID: this.categoryID,
                         subCategoryID: this.subCategoryID,
                         subSubCategoryID: this.subSubCategoryID,
+                        name:this.searchAlbum,
                         page,
                     }
                 }).done(res => {
@@ -205,6 +301,54 @@
                         };
                         this.getPaginationArray(page);
                         this.loader.hide()
+                    }
+                })
+            },
+            searchByTag(tag){
+                location.href="/search?tag="+tag;
+                
+            },
+            getCategories(){
+                $.ajax({
+                    method:"GET",
+                    url:'/getCategory'
+                }).done(res=>{
+                    if(res.status){
+                        this.categories = res.data;
+                    }else{
+                        console.log("Error occupied in getCategory function of productView.ejs.");
+                    }
+                    console.log("this is the result of the request:---", res);
+                })
+            },
+            getSubCategories(categoryID){
+                $.ajax({
+                    method:"POST",
+                    url:'/getSubCategory',
+                    data:{
+                        categoryID: categoryID
+                    }
+                }).done(res=>{
+                    if(res.status){
+                        this.subCategories = res.data;
+                    }else{
+                        console.log("Error occupied in getSubCategory function of productView.ejs");
+                    }
+                })
+            },
+            getSubSubCategories(categoryID, subCategoryID){
+                $.ajax({
+                    method:"POST",
+                    url:'/getSubSubCategory',
+                    data:{
+                        categoryID:categoryID,
+                        subCategoryID: subCategoryID
+                    }
+                }).done(res=>{
+                    if(res.status){
+                        this.subSubCategories = res.data;
+                    }else{
+                        console.log("Error occupied in getSubSubCategory function of productView.ejs");
                     }
                 })
             },
@@ -272,6 +416,12 @@
             this.subSubCategoryID = param[1].split('/subSubCategory/')[1];
             setTimeout(() => {
                 this.getProducts(1);
+                this.getCategories();
+                this.getSubCategories(this.categoryID);
+                this.getSubSubCategories(this.categoryID, this.subCategoryID);
+                this.editCategory = this.categoryID;
+                this.editSubCategory = this.subCategoryID;
+                this.editSubSubCategory = this.subSubCategoryID;
             }, 200);
         },
     })

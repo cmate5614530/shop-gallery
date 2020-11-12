@@ -11,7 +11,15 @@ var products = mongoose.Schema({
     },
     subSubCategoryID: {
         type:String,
+        required: true
+    },
+    tag:{
+        type:String,
         required: false
+    },
+    cover:{
+        type:String,
+        required:false
     },
     name: {
         type: String,

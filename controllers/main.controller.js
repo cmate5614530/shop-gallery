@@ -8,7 +8,8 @@ var categoryModel = require('../models/category');
 var subCategoryModel = require('../models/subCategory')
 var subSubCategoryModel = require('../models/subSubCategory')
 var goodsModel = require('../models/goods');
-var productsModel = require('../models/products')
+var productsModel = require('../models/products');
+const { response } = require('express');
 const BunnyStorage = require('bunnycdn-storage').default;
 const bunnyStorage = new BunnyStorage('2a944ef0-da96-4a87-8201f411dcb2-5fc9-4073', 'fashinbutik/');
 
@@ -42,9 +43,12 @@ class mainController {
     productPage(req, res) {
         res.render('pages/productView')
     }
+    searchAlbum(req, res){
+        res.render('pages/search');
+    }
     async getProducts(req, res) {
         console.log('--maincontroller line 46 getProducs--', req.body);
-        let { categoryID, subCategoryID, subSubCategoryID, page } = req.body;
+        let { categoryID, subCategoryID, subSubCategoryID, page, name } = req.body;
         page = parseInt(page)
         if (page == 1) {
             let category = await categoryModel.findOne({ categoryID })
@@ -64,10 +68,25 @@ class mainController {
         }
     }
     async editProduct(req, res) {
-        let { name, description, _id } = req.body;
-        productsModel.findOneAndUpdate({ _id }, { name, description }, (err, response) => {
+        let { name, description, _id, tag, categoryID, subCategoryID, subSubCategoryID } = req.body;
+        productsModel.findOneAndUpdate({ _id }, { name, description, tag, categoryID, subCategoryID, subSubCategoryID }, (err, response) => {
             if (err) return res.json({ status: false, msg: "Unknown Error" });
-            res.json({ status: true, msg: "Successfully saved." });
+            res.json({status:true, msg:"Successfully saved."});
+        })
+        
+    }
+    async searchByTag(req, res){
+        let {tag} = req.body;
+        let productsCount = await productsModel.find({tag}).countDocuments();
+        let products = await productsModel.find({tag});
+        res.json({status:true, data:products, productsCount});
+    }
+    async setCover(req, res){
+        let {_id, cover} = req.body;
+        console.log("++++++++", _id,cover);
+        productsModel.findOneAndUpdate({_id}, {cover}, (err, response)=>{
+            if(err) return res.json({status:false, msg:"Unknown error"});
+            res.json({status:true, msg:"Set as cover successfully."})
         })
     }
     async download(req, res) {

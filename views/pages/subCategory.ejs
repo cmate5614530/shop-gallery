@@ -45,13 +45,17 @@
     </div>
   </div>
 
+  <div class="text-left">
+    <input type="text" v-model="searchSubCategory" id="searchSubCategory" name="searchSubCategory" style="position:absolute;margin-top:15px;" placeholder="Search subcategory...">
+  </div>
+
   <div class="text-right">
     <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#subCategoryCreateModal">Create 
       Subcategory</a>
   </div>
   
   <div class="mt-3 row" v-if="categoryData.length">
-    <div v-for="(item, index) in categoryData" :key="index" class="col-4 mt-4">
+    <div v-for="(item, index) in filteredList" :key="index" class="col-4 mt-4">
       <div class="card">
         <div class="view overlay">
           <img class="card-img-top" :src="item.imageUrl" height="300" alt="Card image cap">
@@ -77,9 +81,15 @@
         loader: {},
         categoryData: [],
         categoryID: '',
-        href: ''
+        href: '',
+        searchSubCategory: ''
       }
     },
+    computed:{
+        filteredList(){
+          return this.categoryData.filter(item=>item.name.toLowerCase().includes(this.searchSubCategory.toLowerCase())==true)
+        }
+      },
     methods: {
       openLoader() {
         this.loader = this.$loading.show({

@@ -1,0 +1,95 @@
+<% layout('../layout/app') -%>
+<div class="product-wrap" id="search">
+    <div class="font-up-bold text-uppercase">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb cyan lighten-4">
+            <li class="breadcrumb-item"><a class="" href="/">Home</a></li>
+            <li class="breadcrumb-item active">Search</li>
+          </ol>
+        </nav>
+    </div>
+    <div>
+        <label>Total {{detailDataList.length}} album(s) founded by tag "{{tag}}"</label>
+    </div>
+    <div class="row">
+        <div v-for="(item, index) in detailDataList" :key="index" class="col-3 col-sm-2 mb-2">
+            <div class="card">
+                <div class="view overlay">
+                    <img class="card-img-top" :src="item.images[item.cover!==undefined?item.cover:0]" height="170" alt="Card image cap">
+                    <a :href="'/category/'+item.categoryID+'/subCategory/'+item.subCategoryID + '/subSubCategory/' + item.subSubCategoryID">
+                        <div class="mask rgba-white-slight"></div>
+                    </a>
+                </div>
+                <div class="rounded-bottom mdb-color lighten-3 text-center pt-3">
+                    <ul class="list-unstyled list-inline font-small m-0">
+                        <li class="list-inline-item pr-2 text-white float-left ml-3">
+                            <p class="small">{{item.name}}</p>
+                        </li>
+                        <li class="list-inline-item float-right mr-2">
+                            <p class="white-text small"><i class="fas fa-images mr-2"></i>{{item.images.length}}</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div v-if="detailDataList.length==0">
+            <div class="ml-4">
+                <h4>There are no Items</h4>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    new Vue({
+        el:"#search",
+        data(){
+            return{
+                loader:{},
+                tag:'',
+                detailData:{},
+                detailDataList:[]
+            }
+        },
+        mounted() {
+            let param = new URL(window.location.href);
+            this.tag = param.searchParams.get("tag");
+            console.log("---this.tag is---", this.tag);
+            setTimeout(()=>{
+                this.searchProducts(this.tag);
+            }, 200);
+            // this.href = param
+            // this.categoryID = param.split('category/')[1];
+            // setTimeout(() => {
+            //     this.getSubCategory()
+            // }, 200);
+        },
+        methods:{
+            openLoader() {
+                this.loader = this.$loading.show({
+                loader: 'dots',
+                backgroundColor: '#ffffff',
+                opacity: 0.5,
+                transparence: 0.5
+                });
+            },
+            searchProducts(tag){
+                this.openLoader();
+                $.ajax({
+                    method:"POST",
+                    url:'/searchByTag',
+                    data:{
+                        tag
+                    }
+                }).done(res=>{
+                    if(res.status){
+                        console.log("successfully search finished.", res);
+                        this.detailDataList = res.data;
+                    }else{
+                        console.log("Failed to search.");
+                    }
+                    this.loader.hide();
+                })
+            },
+        }
+    })
+</script>

@@ -52,9 +52,10 @@ router.get('/getCategories', main.getCategories)
 router.post('/createProductDB', main.createProductDB);
 router.post('/getSubCategory', main.getSubCategory);
 // router.post('/getSubCategories', main.getSubCategory)
-
+router.post('/setCover', isLoggedIn, main.setCover);
 router.get('/invoice/:id', isLoggedIn, main.download);
-
+router.post('/searchByTag', main.searchByTag);
+router.get('/search', main.searchAlbum);
 module.exports = router;
 
 function isLoggedIn(req, res, next) {
