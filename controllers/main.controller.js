@@ -32,22 +32,38 @@ class mainController {
     }
 
     index(req, res) {
-        res.render('index');
+        if(req.isAuthenticated()){
+            res.render('index');
+
+        }else{
+            res.render('index_user');
+        }
     }
     subCategory(req, res) {
-        res.render('pages/subCategory');
+        if(req.isAuthenticated()){
+            res.render('pages/subCategory');
+        }else{
+            res.render('pages/subCategory_user')
+        }
     }
     subSubCategory(req, res){
-        res.render('pages/subsubCategory');
+        if(req.isAuthenticated()){
+            res.render('pages/subsubCategory');
+        }else{
+            res.render('pages/subsubCategory_user');
+        }
     }
     productPage(req, res) {
-        res.render('pages/productView')
+        if(req.isAuthenticated()){
+            res.render('pages/productView');
+        }else{
+            res.render('pages/productView_user');
+        }
     }
     searchAlbum(req, res){
         res.render('pages/search');
     }
     async getProducts(req, res) {
-        console.log('--maincontroller line 46 getProducs--', req.body);
         let { categoryID, subCategoryID, subSubCategoryID, page, name } = req.body;
         page = parseInt(page)
         if (page == 1) {
@@ -83,7 +99,6 @@ class mainController {
     }
     async setCover(req, res){
         let {_id, cover} = req.body;
-        console.log("++++++++", _id,cover);
         productsModel.findOneAndUpdate({_id}, {cover}, (err, response)=>{
             if(err) return res.json({status:false, msg:"Unknown error"});
             res.json({status:true, msg:"Set as cover successfully."})

@@ -1,0 +1,105 @@
+<% layout('../layout/app_user') -%>
+
+<div class="home-wrap" id="subSubCategory">
+  <div class="font-up-bold text-uppercase">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb cyan lighten-4">
+        <li class="breadcrumb-item"><a class="" href="/">Home</a></li>
+        <li class="breadcrumb-item"><a class=""
+          :href="'/category/' + categoryID">{{this.categoryName}}</a></li>
+        <li class="breadcrumb-item active">{{this.subCategoryName}}/</li>
+      </ol>
+    </nav>
+  </div>
+  
+
+  <div class="text-left">
+    <input type="text" v-model="searchSubSubCategory" id="searchSubSubCategory" name="searchSubSubCategory" placeholder="Search subsubcategory...">
+  </div>
+
+  
+  <div class="mt-3 row" v-if="categoryData.length">
+    <div v-for="(item, index) in filteredList" :key="index" class="col-4 mt-4">
+      <div class="card">
+        <div class="view overlay">
+          <img class="card-img-top" :src="item.imageUrl" height="300" alt="Card image cap">
+   
+          <a :href="href + '/subSubCategory/'+item.subSubCategoryID">
+            <div class="mask rgba-white-slight waves-effect waves-light"></div>
+          </a>
+
+        </div>
+        <div class="card-body d-flex align-items-center">
+          <h3 class="card-title">{{item.name}}</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <vue-snotify></vue-snotify>
+</div>
+<script>
+  new Vue({
+    el: "#subSubCategory",
+    data() {
+      return {
+        loader: {},
+        categoryData: [],
+        categoryID: '',
+        subCategoryID:'',
+        href: '',
+        categoryName: '',
+        subCategoryName: '',
+        searchSubSubCategory:''
+      }
+    },
+    computed:{
+        filteredList(){
+          return this.categoryData.filter(item=>item.name.toLowerCase().includes(this.searchSubSubCategory.toLowerCase())==true)
+        }
+      },
+    methods: {
+      openLoader() {
+        this.loader = this.$loading.show({
+          loader: 'dots',
+          backgroundColor: '#ffffff',
+          opacity: 0.5,
+          transparence: 0.5
+        });
+      },
+      
+      getSubSubCategory() {
+        this.openLoader()
+        $.ajax({
+          method: "POST",
+          url: "/getSubSubCategory",
+          data: {
+            categoryID: this.categoryID,
+            subCategoryID: this.subCategoryID
+          }
+        }).done((res) => {
+          this.loader.hide()
+          if (res.status) {
+            this.categoryData = res.data;
+            this.categoryName = res.categoryName;
+            this.subCategoryName = res.subCategoryName;
+          } else {
+            this.Snotify.error(res.msg, {
+              position: 'rightTop'
+            })
+          }
+        })
+
+      }
+    },
+    mounted() {
+      let param = new URL(window.location.href).pathname;
+      this.href = param
+      let cate_sub = param.split('category/')[1];
+      this.categoryID = cate_sub.split('/subCategory/')[0];
+      this.subCategoryID = cate_sub.split('/subCategory/')[1];
+      setTimeout(() => {
+        this.getSubSubCategory()
+      }, 200);
+    },
+  })
+</script>

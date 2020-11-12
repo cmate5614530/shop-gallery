@@ -31,11 +31,9 @@ router.post('/category/createSubCategory', upload.single('subCategoryImage'), is
 router.get('/seeds', isLoggedIn, main.seeds)
 //GET 
 router.get('/getCategory', isLoggedIn, main.getCategory);
-// router.get('/getSubCategory', isLoggedIn, main.getSubCategory);
 router.get('/deleteCategory/:id', isLoggedIn, main.deleteCategory);
 
 router.get('/category/:categoryID', isLoggedIn, main.subCategory);
-//router.get('/category/:categoryID/subCategory/:subCategoryID', main.productPage)
 
 router.post('/category/:categoryID/subCategory/createSubSubCategory', upload.single('subSubCategoryImage'), isLoggedIn, main.createSubSubcategory)
 router.post('/getSubSubCategory', main.getSubSubCategory);
@@ -51,17 +49,16 @@ router.post('/editProduct', isLoggedIn, main.editProduct)
 router.get('/getCategories', main.getCategories)
 router.post('/createProductDB', main.createProductDB);
 router.post('/getSubCategory', main.getSubCategory);
-// router.post('/getSubCategories', main.getSubCategory)
 router.post('/setCover', isLoggedIn, main.setCover);
 router.get('/invoice/:id', isLoggedIn, main.download);
 router.post('/searchByTag', main.searchByTag);
 router.get('/search', main.searchAlbum);
 module.exports = router;
 
-function isLoggedIn(req, res, next) {
+function isLoggedIn(req, res, next, next2) {
   if (req.isAuthenticated()) {
     return next();
+  }else{
+    return next2();
   }
-  // req.session.oldUrl = req.url;
-  res.redirect('/signin');
 }
