@@ -1,0 +1,71 @@
+[{
+  "_id": {
+    "$oid": "5fa7eb1b25ec8f5228f0f0e0"
+  },
+  "categoryID": "ta3KTTK2",
+  "subCategoryID": "KntIQTLG",
+  "subSubCategoryID": "a07pVkCo",
+  "name": "subsubcate1",
+  "imageUrl": "https://fashinbutikskw.b-cdn.net/category/subCategory/317c9a04d889d7af659c976423b4a268.png",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5fa7f33ca5b8df3cb0468646"
+  },
+  "categoryID": "bKcvjpXQ",
+  "subCategoryID": "w1S1rGlQ",
+  "subSubCategoryID": "LdiyDzM7",
+  "name": "Boots",
+  "imageUrl": "https://fashinbutikskw.b-cdn.net/category/subCategory/f3844922ad4440ca63b788e00d76be64.jpg",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5facb0707522d1351c4a75b2"
+  },
+  "categoryID": "P6PRhlWS",
+  "subCategoryID": "R6fxtIZ8",
+  "subSubCategoryID": "6qr2XAbW",
+  "name": "aa",
+  "imageUrl": "https://fashinbutikskw.b-cdn.net/category/subCategory/d9511c74dc1da9478a0a8c4fb13bc487.PNG",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5facb0847522d1351c4a75b3"
+  },
+  "categoryID": "P6PRhlWS",
+  "subCategoryID": "Dxq6ssSq",
+  "subSubCategoryID": "yyeQk1MQ",
+  "name": "aa",
+  "imageUrl": "https://fashinbutikskw.b-cdn.net/category/subCategory/441e375fc40d67d27f74beb42fada6c1.PNG",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5facb0977522d1351c4a75b4"
+  },
+  "categoryID": "XXbgan82",
+  "subCategoryID": "s8kfvP9x",
+  "subSubCategoryID": "fhGfJEHz",
+  "name": "aqq",
+  "imageUrl": "https://fashinbutikskw.b-cdn.net/category/subCategory/dcf4067708332ac04f5e57264655f30b.PNG",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5facb0a57522d1351c4a75b5"
+  },
+  "categoryID": "XXbgan82",
+  "subCategoryID": "aHJaVQXX",
+  "subSubCategoryID": "1FGWHuU5",
+  "name": "qqq",
+  "imageUrl": "https://fashinbutikskw.b-cdn.net/category/subCategory/74cfaedd03aff817eb32c181514cfe4c.PNG",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5facba2f725ef94284d63fd3"
+  },
+  "categoryID": "bKcvjpXQ",
+  "subCategoryID": "w1S1rGlQ",
+  "subSubCategoryID": "VuWyxp52",
+  "name": "Sports Shoes",
+  "imageUrl": "https://fashinbutikskw.b-cdn.net/category/subCategory/afa56c1c7e054c8344ab4ee555b36f1d.png",
+  "__v": 0
+}]
