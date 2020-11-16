@@ -218,10 +218,7 @@ class mainController {
         let data =await subSubCategoryModel.find({categoryID: categoryID, subCategoryID: subCategoryID });
         res.json({ status: true, data, categoryName, subCategoryName});
     }
-    // async getSubCategories(req, res) {
-    //     let categoryID = req.body.category;
-    //     let subcategory = await subCategoryModel
-    // }
+
     async createInvoice(req, res) {
         let user = req.user;
         delete user.password
