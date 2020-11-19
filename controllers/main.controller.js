@@ -197,10 +197,12 @@ class mainController {
     }
     async getCategories(req, res) {
         let category = await categoryModel.find({});
-        let subCategory = await subCategoryModel.find({ categoryID: category[0].categoryID })
+        let subCategory = await subCategoryModel.find({ categoryID: category[0].categoryID });
+        let subSubCategory = await subSubCategoryModel.find({ categoryID:category[0].categoryID, subCategoryID:subCategory[0].subCategoryID});
         let data = {
             category,
-            subCategory
+            subCategory,
+            subSubCategory
         }
         res.json({ status: true, data });
     }
