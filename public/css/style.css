@@ -9,7 +9,7 @@
     padding-top: 1.4rem;
 }
 .auth-form label {
-    font-size: 12px;
+    font-size: 12px; 
 }
 .danger {
     color: red;
@@ -106,3 +106,15 @@ input#phone::-webkit-inner-spin-button {
 .navbar-brand {
     z-index: 1000;
 }
+@media only screen and (min-width:1080px){
+    .card img{
+        height: 300px !important;
+    }
+}
+/* @media only screen and (min-width:300px) and (max-width:600px){
+    .card img{
+        width: auto !important;
+        height: auto !important;
+
+    }
+} */
