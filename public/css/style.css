@@ -98,6 +98,11 @@ input#phone::-webkit-inner-spin-button {
     width: 100% !important;
 }
 
+#navbarSupportedContent1 {
+    position: fixed;
+    width: 100%;
+    z-index: 999;
+}
 #navbar {
     position: fixed;
     width: 100%;
@@ -107,7 +112,7 @@ input#phone::-webkit-inner-spin-button {
     z-index: 1000;
 }
 @media only screen and (min-width:1080px){
-    .card img{
+    #category .card img{
         height: 300px !important;
     }
 }

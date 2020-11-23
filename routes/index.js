@@ -32,7 +32,7 @@ router.get('/seeds', isLoggedIn, main.seeds)
 //GET 
 router.get('/getCategory', isLoggedIn, main.getCategory);
 router.get('/deleteCategory/:id', isLoggedIn, main.deleteCategory);
-
+router.get('/category/:categoryID/subCategory/:subCategoryID/subSubCategory/deleteAlbum/:id', isLoggedIn, main.deleteAlbum);
 router.get('/category/:categoryID', isLoggedIn, main.subCategory);
 
 router.post('/category/:categoryID/subCategory/createSubSubCategory', upload.single('subSubCategoryImage'), isLoggedIn, main.createSubSubcategory)
@@ -44,7 +44,7 @@ router.get('/category/:categoryID/subCategory/deleteSubSubCategory/:id', isLogge
 router.get('/create-invoice', isLoggedIn, main.createInvoice);
 router.post('/create-invoice', isLoggedIn, main.createInvoice);
 router.post('/editProduct', isLoggedIn, main.editProduct)
-
+router.post('/setAlbumName', isLoggedIn, main.setProductName);
 
 router.get('/getCategories', main.getCategories)
 router.post('/createProductDB', main.createProductDB);

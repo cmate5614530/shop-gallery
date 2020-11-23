@@ -101,7 +101,7 @@ class mainController {
         let {_id, cover} = req.body;
         productsModel.findOneAndUpdate({_id}, {cover}, (err, response)=>{
             if(err) return res.json({status:false, msg:"Unknown error"});
-            res.json({status:true, msg:"Set as cover successfully."})
+            res.json({status:true, msg:"Cover was set successfully"})
         })
     }
     async download(req, res) {
@@ -113,6 +113,20 @@ class mainController {
         let { id } = req.params;
         await categoryModel.deleteOne({ categoryID: id });
         res.json({ status: true, msg: "Category was deleted" });
+    }
+    async deleteAlbum(req, res){
+        let {id} = req.params;
+        await productsModel.deleteOne({_id: id});
+        res.json({ status: true, msg: "Album was deleted successfully"});
+    }
+    async setProductName(req, res){
+        let {_id, name} = req.body;
+        let filter = {_id: _id};
+        let update = {name : name};
+        await productsModel.findOneAndUpdate(filter, update, (err, response)=>{
+            if(err) return res.json({status: false, msg:"Unknown error"});
+            res.json({status:true, msg:"Album name saved successfully : "+name});
+        })
     }
     async createCategory(req, res) {
         let image = fs.readFileSync(req.file.path)

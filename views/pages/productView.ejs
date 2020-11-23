@@ -27,11 +27,15 @@
                 </div>
                 <div class="rounded-bottom mdb-color lighten-3 text-center pt-3">
                     <ul class="list-unstyled list-inline font-small m-0">
-                        <li class="list-inline-item pr-2 text-white float-left ml-3">
-                            <p class="small">{{item.name}}</p>
+                        
+                        <input type="text" class="small list-inline-item pr-2 float-left ml-1" style="width: 66%;" v-model="item.name" @change="onAlbumNameChange($event, item._id)"/>
+                        
+                        <li class="list-inline-item float-right mr-1">
+                            <p class="white-text small"><i class="fas fa-images mr-1"></i>{{item.images.length}}</p>
                         </li>
+
                         <li class="list-inline-item float-right mr-2">
-                            <p class="white-text small"><i class="fas fa-images mr-2"></i>{{item.images.length}}</p>
+                            <p class="white-text small"><i class="fas fa-trash-alt" @click.prevent="deleteAlbum(item._id)" style="cursor: pointer;"></i></p>
                         </li>
                     </ul>
                 </div>
@@ -206,6 +210,45 @@
             }
         },
         methods: {
+            deleteAlbum(id){
+                swal({
+                    title: "Confirm",
+                    text: "Are you sure to delete this Album?",
+                    icon: "warning",
+                    button: "OK",
+                    })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            $.ajax({
+                                url: `deleteAlbum/${id}`,
+                                method: 'GET'
+                            }).done(async (res) => {
+                                if(res.status){
+                                    location.reload();
+                                    console.log(res.msg);
+                                }
+                            })
+                        }
+                    }).catch((err) => {
+                        console.log("Error occupied on deleteAlbum function");
+                    });
+            },
+            onAlbumNameChange(event, _id){
+                let name = event.target.value;
+                $.ajax({
+                    method:"POST",
+                    url:'/setAlbumName',
+                    data:{
+                        _id, name
+                    }
+                }).done(res=>{
+                    if(res.status){
+                        console.log(res.msg);
+                    }else{
+                        console.log(res.msg);
+                    }
+                })
+            },
             onCategoryChange(event){
                 console.log("---category changed into this--", event.target.value);
                 this.getSubCategories(event.target.value);
