@@ -1,8 +1,14 @@
 <% layout('layout/app_user') -%>
 
 <div class="home-wrap" id="category">
-  <div class="text-left">
-    <input type="text" v-model="searchCategory" id="searchCategory" name="searchCategory"  placeholder="Search category...">
+
+
+  <br>
+  <div class="row">
+    <div class="col-md-6 searchdiv" >
+      <input type="text" v-model="searchCategory" id="searchCategory" name="searchCategory" placeholder="Search category...">
+    </div>
+    
   </div>
 
   <div class="mt-3 row" v-if="categoryData.length">

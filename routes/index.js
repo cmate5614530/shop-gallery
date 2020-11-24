@@ -34,6 +34,7 @@ router.get('/getCategory', isLoggedIn, main.getCategory);
 router.get('/deleteCategory/:id', isLoggedIn, main.deleteCategory);
 router.get('/category/:categoryID/subCategory/:subCategoryID/subSubCategory/deleteAlbum/:id', isLoggedIn, main.deleteAlbum);
 router.get('/category/:categoryID', isLoggedIn, main.subCategory);
+router.get('/category/deleteSubCategory/:id', isLoggedIn, main.deleteSubCategory);
 
 router.post('/category/:categoryID/subCategory/createSubSubCategory', upload.single('subSubCategoryImage'), isLoggedIn, main.createSubSubcategory)
 router.post('/getSubSubCategory', main.getSubSubCategory);
@@ -43,7 +44,8 @@ router.get('/category/:categoryID/subCategory/deleteSubSubCategory/:id', isLogge
 
 router.get('/create-invoice', isLoggedIn, main.createInvoice);
 router.post('/create-invoice', isLoggedIn, main.createInvoice);
-router.post('/editProduct', isLoggedIn, main.editProduct)
+router.post('/editProduct', isLoggedIn, main.editProduct);
+router.post('/editProductPath', isLoggedIn, main.editProductPath);
 router.post('/setAlbumName', isLoggedIn, main.setProductName);
 
 router.get('/getCategories', main.getCategories)

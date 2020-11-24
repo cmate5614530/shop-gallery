@@ -16,11 +16,55 @@
         <input type="text" v-model="searchAlbum" id="searchAlbum" name="searchAlbum"  placeholder="Search album...">
     </div>
     <br>
+
+    <label v-if="checkedAlbums.length && !detailMode">{{this.checkedAlbums.length}} item(s) selected  </label>
+    <button @click.prevent="showMoveToModal()" v-if="checkedAlbums.length && !detailMode" class="btn btn-blue btn-rounded btn-md">Move to...</button>
+    <br/><br/>
+
+    <div class="modal fade" id="moveModal" tabindex="-1" role="dialog" aria-labelledby="moveModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title w-100 font-weight-bold" id="moveModalLabel">Move to ...</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="path">Path</label>
+                    <div name="path">
+                        <select v-model="batchCategory" style="width: 30%;" @change="onBatchCategoryChange($event)" :required="batchCategory">
+                            <option v-if="categories" v-for="cat in categories" v-bind:value="cat.categoryID">{{cat.name}}</option>
+                        </select>
+                        <select v-model="batchSubCategory" style="width: 30%;" @change="onBatchSubCategoryChange($event)" :required="batchSubCategory">
+                            <option v-if="subCategories1" v-for="subcat in subCategories1" v-bind:value="subcat.subCategoryID">{{subcat.name}}</option>
+                        </select>
+                        <select v-model="batchSubSubCategory" style="width: 30%;" @change="onBatchSubSubCategoryChange($event)" :required="batchSubSubCategory">
+                            <option v-if="subSubCategories1" v-for="subsubcat in subSubCategories1" v-bind:value="subsubcat.subSubCategoryID">{{subsubcat.name}}</option>
+                        </select>
+                    </div>
+                    <p v-if="errors_movemodal.length">
+                        <ul style="color:red;">
+                          <li v-for="error in errors_movemodal">{{ error }}</li>
+                        </ul>
+                      </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+              <button type="button" class="btn btn-default" @click.prevent="savePath()">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     <div class="row" v-show="!detailMode">
-        <div v-for="(item, index) in filteredList" :key="index" class="col-3 col-sm-2 mb-2">
+        <div v-for="(item, index) in filteredList" :key="index" class="col-6 col-sm-4 col-md-2 mb-2">
+            <input type="checkbox" class="checkbox" v-model="checkedAlbums" :value="item._id" style="position:absolute; margin-top: 5px; margin-left:5px; z-index: 100; transform: scale(1.5);"/>
             <div class="card">
                 <div class="view overlay">
-                    <img class="card-img-top" :src="item.images[item.cover!==undefined?item.cover:0]" height="170" alt="Card image cap">
+                    <img class="card-img-top" :src="item.images[item.cover!==undefined?item.cover:0]"  alt="Card image cap">
                     <a @click.prevent="viewDetail(item, index)">
                         <div class="mask rgba-white-slight"></div>
                     </a>
@@ -28,7 +72,7 @@
                 <div class="rounded-bottom mdb-color lighten-3 text-center pt-3">
                     <ul class="list-unstyled list-inline font-small m-0">
                         
-                        <input type="text" class="small list-inline-item pr-2 float-left ml-1" style="width: 66%;" v-model="item.name" @change="onAlbumNameChange($event, item._id)"/>
+                        <input type="text" class="small list-inline-item pr-2 float-left ml-1" style="width: 63%;" v-model="item.name" @change="onAlbumNameChange($event, item._id)"/>
                         
                         <li class="list-inline-item float-right mr-1">
                             <p class="white-text small"><i class="fas fa-images mr-1"></i>{{item.images.length}}</p>
@@ -98,19 +142,15 @@
                             <input type="text" class="form-control" id="tag" v-model="detailData.tag"
                                 placeholder="Please enter tag...">
                         </div>
-                        <div class="form-group">
                             <label for="path">Path</label>
                             <div name="path">
-                                <select v-model="editCategory" @change="onCategoryChange($event)" :required="!editCategory">
-                                    <option disabled value="">Category</option>
+                                <select v-model="editCategory" style="width: 30%;" @change="onCategoryChange($event)" :required="!editCategory">
                                     <option v-if="categories" v-for="cat in categories" v-bind:value="cat.categoryID">{{cat.name}}</option>
                                 </select>
-                                <select v-model="editSubCategory" @change="onSubCategoryChange($event)" :required="!editSubCategory">
-                                    <option disabled value="">SubCategory</option>
+                                <select v-model="editSubCategory" style="width: 30%;" @change="onSubCategoryChange($event)" :required="!editSubCategory">
                                     <option v-if="subCategories" v-for="subcat in subCategories" v-bind:value="subcat.subCategoryID">{{subcat.name}}</option>
                                 </select>
-                                <select v-model="editSubSubCategory" @change="onSubSubCategoryChange($event)" :required="!editSubSubCategory">
-                                    <option disabled value="">SubSubCategory</option>
+                                <select v-model="editSubSubCategory" style="width: 30%;" @change="onSubSubCategoryChange($event)" :required="!editSubSubCategory">
                                     <option v-if="subSubCategories" v-for="subsubcat in subSubCategories" v-bind:value="subsubcat.subSubCategoryID">{{subsubcat.name}}</option>
                                 </select>
                             </div>
@@ -119,7 +159,7 @@
                                   <li v-for="error in errors">{{ error }}</li>
                                 </ul>
                               </p>
-                        </div>
+                        
                     </form>
                 </div>
                 <div class="modal-footer d-flex justify-content-center">
@@ -128,25 +168,25 @@
             </div>
         </div>
     </div>
-    <div class="detail-section" v-show="detailMode" v-if="detailMode">
+    <div class="detail-section" v-show="detailMode" v-if="detailMode" class="col-6 col-sm-4 col-md-2 mb-2">
         <div class="row">
             <button class="btn btn-primary ml-auto btn-rounded" @click.prevent="viewProducts()">Go back</button>
         </div>
         <div class="row">
-            <div class="col-2">
+            <div class="col-md-2 col-sm-4 col-xs-12">
                 <img :src="detailData.images[detailData.cover!==undefined?detailData.cover:0]" alt="thumbnail" width="100%">
             </div>
-            <div class="col-10">
+            <div class="col-md-10 col-xs-12">
                 <h3>{{detailData.name}} | {{detailData.images.length}}</h3>
                 <p>{{detailData.description}}</p>
-                <div class="d-flex">
-                    <div>
+                <div class="row">
+                    <div class="col-xs-6">
                         <a href="javascript:void(0)" class="btn btn-purple btn-rounded" data-toggle="modal"
                             data-target="#productEdit">Edit</a>
                         <label  v-if="detailData.tag" for="tagname">&nbsp;&nbsp;&nbsp;Search albums by tag:&nbsp;&nbsp;</label>
                         <button class="btn btn-purple btn-rounded" v-if="detailData.tag" @click.prevent="searchByTag(detailData.tag)">{{detailData.tag}}</button>
                     </div>
-                    <div class="btn-group ml-auto" role="group" aria-label="options">
+                    <div class="btn-group ml-auto col-xs-6" role="group" aria-label="options">
                         <button type="button" class="btn btn-purple btn-rounded" @click.prevent="changeView('col-2')"><i
                                 class="fas fa-icons pr-2"></i>
                             Small</button>
@@ -165,7 +205,7 @@
                     <img :src="item" alt="image" width="100%" class="p-2">
                 </a>
                 <div v-if="viewMode != 'col-2'">
-                    <button @click.prevent="setCover(index, detailData._id)" type="button" class="btn btn-pink btn-rounded">&nbsp;&nbsp;Set as cover image</button>
+                    <button @click.prevent="setCover(index, detailData._id)" type="button" class="btn btn-pink btn-rounded btn-md">&nbsp;&nbsp;Set as cover image</button>
                     <p class="detail-name pl-2 m-0">{{item.split('/')[item.split('/').length-1]}}</p>
                     <p class="detail-date pl-2 m-0">{{changeDateformat(detailData.created_at)}}</p>         
                 </div>
@@ -198,10 +238,19 @@
                 editCategory:'',
                 editSubCategory:'',
                 editSubSubCategory:'',
-                categories:'',
-                subCategories:'',
-                subSubCategories:'',
-                errors:[]
+                categories:[],
+                subCategories:[],
+                subSubCategories:[],
+                subCategories1: [],
+                subSubCategories1: [],
+                errors:[],
+                checkedAlbums:[],
+                batchCategory:'',
+                batchSubCategory:'',
+                batchSubSubCategory:'',
+                errors_movemodal:[],
+                showMoveModal:false,
+
             }
         },
         computed:{
@@ -233,6 +282,9 @@
                         console.log("Error occupied on deleteAlbum function");
                     });
             },
+            showMoveToModal(){
+                $("#moveModal").modal();
+            },
             onAlbumNameChange(event, _id){
                 let name = event.target.value;
                 $.ajax({
@@ -250,19 +302,33 @@
                 })
             },
             onCategoryChange(event){
-                console.log("---category changed into this--", event.target.value);
-                this.getSubCategories(event.target.value);
+                this.getSubCategories(event.target.value, true);
+                this.subSubCategories = [];
                 this.editSubCategory ='';
                 this.editSubSubCategory = '';
             },
+            onBatchCategoryChange(event){
+                this.getSubCategories(event.target.value, false);
+                this.subSubCategories1 = [];
+                this.batchSubCategory = '';
+                this.batchSubSubCategory = '';
+                this.errors_movemodal = [];
+            },
             onSubCategoryChange(event){
-                console.log("---subCategory changed into this---", event.target.value);
-                this.getSubSubCategories(this.editCategory, event.target.value);
-                console.log(this.subCategories)
+                this.getSubSubCategories(this.editCategory, event.target.value, true);
                 this.editSubSubCategory = '';
+            },
+            onBatchSubCategoryChange(event){
+                this.getSubSubCategories(this.batchCategory, event.target.value, false);
+                this.batchSubSubCategory = '';
+                this.errors_movemodal = [];
             },
             onSubSubCategoryChange(event){
                 console.log("--SubSubCategory changed into this---", event.target.value);
+            },
+            onBatchSubSubCategoryChange(event){
+                console.log("---Batch SubSubCategory path changed into---", this.batchCategory, this.batchSubCategory, event.target.value);
+                this.errors_movemodal = [];
             },
             setCover(cover, _id){
                 this.openLoader();
@@ -276,6 +342,41 @@
                     this.loader.hide();
                     location.reload();
                 })
+            },
+            savePath(){
+                let categoryID = this.batchCategory;
+                let subCategoryID = this.batchSubCategory;
+                let subSubCategoryID = this.batchSubSubCategory;
+                this.errors_movemodal = [];
+                if(!categoryID){
+                    this.errors_movemodal.push("Please select Category.");
+                    this.errors_movemodal.push("Please select SubCategory.");
+                    this.errors_movemodal.push("Please select SubSubCategory.");
+                }else if(!subCategoryID){
+                    this.errors_movemodal.push("Please select SubCategory.");
+                    this.errors_movemodal.push("Please select SubSubCategory.");
+                }else if(!subSubCategoryID){
+                    this.errors_movemodal.push("Please select SubSubCategory.");
+                }else{
+                    console.log("this is savePatch() function", this.checkedAlbums, categoryID, subCategoryID, subSubCategoryID);
+                    let selectedAlbums = JSON.stringify(this.checkedAlbums);
+                    this.openLoader();
+                    $.ajax({
+                        method: "POST",
+                        url: "/editProductPath",
+                        data: {
+                            selectedAlbums, categoryID, subCategoryID, subSubCategoryID
+                        }
+                    }).done(res => {
+                        this.loader.hide();
+                        if (res.status) {
+                            $('#moveModal').modal('hide')
+                            location.reload();
+                        } else {
+                            this.error = 'Something went wrong'
+                        }
+                    })
+                }
             },
             saveChanges() {
                 this.products[this.index] = this.detailData;
@@ -364,7 +465,7 @@
                     console.log("this is the result of the request:---", res);
                 })
             },
-            getSubCategories(categoryID){
+            getSubCategories(categoryID, flag){
                 $.ajax({
                     method:"POST",
                     url:'/getSubCategory',
@@ -373,13 +474,18 @@
                     }
                 }).done(res=>{
                     if(res.status){
-                        this.subCategories = res.data;
+                        if(flag){
+                            this.subCategories =  res.data;
+                        }else{
+                            this.subCategories1 = res.data;
+                        }
+                        
                     }else{
                         console.log("Error occupied in getSubCategory function of productView.ejs");
                     }
                 })
             },
-            getSubSubCategories(categoryID, subCategoryID){
+            getSubSubCategories(categoryID, subCategoryID, flag){
                 $.ajax({
                     method:"POST",
                     url:'/getSubSubCategory',
@@ -389,9 +495,15 @@
                     }
                 }).done(res=>{
                     if(res.status){
-                        this.subSubCategories = res.data;
+                        if(flag){
+                            this.subSubCategories = res.data;
+                        }else{
+                            this.subSubCategories1 = res.data;
+                        }
+                        
                     }else{
                         console.log("Error occupied in getSubSubCategory function of productView.ejs");
+                        
                     }
                 })
             },
@@ -459,12 +571,17 @@
             this.subSubCategoryID = param[1].split('/subSubCategory/')[1];
             setTimeout(() => {
                 this.getProducts(1);
-                this.getCategories();
-                this.getSubCategories(this.categoryID);
-                this.getSubSubCategories(this.categoryID, this.subCategoryID);
+                this.categories = this.getCategories();
+                this.subCategories = this.getSubCategories(this.categoryID, true);
+                this.subCategories1 = this.getSubCategories(this.categoryID, false);
+                this.subSubCategories = this.getSubSubCategories(this.categoryID, this.subCategoryID, true);
+                this.subSubCategories1 = this.getSubSubCategories(this.categoryID, this.subCategoryID, false);
                 this.editCategory = this.categoryID;
                 this.editSubCategory = this.subCategoryID;
                 this.editSubSubCategory = this.subSubCategoryID;
+                this.batchCategory = this.categoryID;
+                this.batchSubCategory = this.subCategoryID;
+                this.batchSubSubCategory = this.subSubCategoryID;
             }, 200);
         },
     })

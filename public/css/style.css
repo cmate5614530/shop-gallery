@@ -43,7 +43,10 @@
 }
 
 .main-wrap {
-    padding: 30px;
+    padding-left: 30px;
+    padding-right:30px;
+    padding-top:50px;
+    padding-bottom:30px;
 }
 label.error {
     color: red;
@@ -54,14 +57,14 @@ label.error {
     margin: auto;
 }
 .home-wrap {
-    max-width: 1000px;
-    min-width: 500px;
+    /* max-width: 1000px;
+    min-width: 500px; */
     margin: auto;
     margin-top: 35px;
 }
 .product-wrap {
-    max-width: 1200px;
-    min-width: 500px;
+    /* max-width: 1200px;
+    min-width: 500px; */
     margin: auto;
     margin-top: 35px;
 }
@@ -80,9 +83,9 @@ input#phone::-webkit-inner-spin-button {
     margin-left: auto;
 }
 
-.navbar .dropdown-menu .dropdown-item:hover {
+/* .navbar .dropdown-menu .dropdown-item:hover {
     color: white !important;
-}
+} */
 
 .btn-rounded {
     border-radius: 10em;
@@ -90,13 +93,13 @@ input#phone::-webkit-inner-spin-button {
 .detail-name {
     font-size: 12px;
 }
-.mfp-figure figure {
-    width: 600px;
-}
+/*.mfp-figure figure {*/
+/*    width: 600px;*/
+/*}*/
 
-.mfp-figure img {
-    width: 100% !important;
-}
+/*.mfp-figure img {*/
+/*    width: 100% !important;*/
+/*}*/
 
 #navbarSupportedContent1 {
     position: fixed;
@@ -115,11 +118,45 @@ input#phone::-webkit-inner-spin-button {
     #category .card img{
         height: 300px !important;
     }
-}
-/* @media only screen and (min-width:300px) and (max-width:600px){
-    .card img{
-        width: auto !important;
-        height: auto !important;
-
+    .home-wrap {
+        max-width: 1000px;
+        min-width: 500px;
     }
-} */
+    .product-wrap {
+        max-width: 1200px;
+        min-width: 500px;
+    }
+}
+@media only screen and (min-width:601px){
+    #products .card-img-top{
+        height: 175px;
+    }
+}
+@media only screen and (max-width:600px){
+    #products .card-img-top{
+        height: 162px;
+    }
+}
+@media only screen and (max-width:600px){
+    .detail-name{
+        display:none;
+    }
+    .detail-date{
+        display:none;
+    }
+}
+.modal-backdrop{
+    width: 100% !important;
+    height: 100% !important;
+}
+.categorydiv{
+    margin-top: 37px;
+    margin-bottom: -20px;
+}
+.searchdiv{
+    margin-top: 19px;
+}
+
+.darken-grey-text {
+    color: #2E2E2E;
+}

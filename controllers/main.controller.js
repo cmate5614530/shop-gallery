@@ -91,6 +91,17 @@ class mainController {
         })
         
     }
+    async editProductPath(req, res){
+        let { categoryID, subCategoryID, subSubCategoryID} =  req.body;
+        let selectedAlbums = JSON.parse(req.body.selectedAlbums);
+        selectedAlbums.forEach(element => {
+           productsModel.findOneAndUpdate({_id: element}, {categoryID: categoryID, subCategoryID: subCategoryID, subSubCategoryID: subSubCategoryID}, (err, response)=>{
+               if(err) return res.json({status:false, msg:"Unknown Error"});
+           }) 
+        });
+        res.json({status: true, msg:"Successfully changed."});
+
+    }
     async searchByTag(req, res){
         let {tag} = req.body;
         let productsCount = await productsModel.find({tag}).countDocuments();
@@ -112,6 +123,9 @@ class mainController {
     async deleteCategory(req, res) {
         let { id } = req.params;
         await categoryModel.deleteOne({ categoryID: id });
+        await subCategoryModel.deleteMany({ categoryID: id});
+        await subSubCategoryModel.deleteMany({ categoryID: id});
+        await productsModel.deleteMany({categoryID: id});
         res.json({ status: true, msg: "Category was deleted" });
     }
     async deleteAlbum(req, res){
@@ -129,6 +143,15 @@ class mainController {
         })
     }
     async createCategory(req, res) {
+        if(!req.file){
+            let data_1 = {
+                categoryID: generateRandomString(8),
+                name: req.body.categoryName,
+                imageUrl:`${process.env.PULL_ZONE_URL}category/760dfa0cd3713d985393ea36da0ae3e1.jpg`
+            }
+            await categoryModel.create(data_1);
+            return res.json({status:true, msg:"Category was created without image"});
+        }
         let image = fs.readFileSync(req.file.path)
         let key = `category/${req.file.filename}.${req.file.originalname.split('.')[req.file.originalname.split('.').length - 1]}`
         let response = await bunnyStorage.upload(image, key);
@@ -148,6 +171,16 @@ class mainController {
         }
     }
     async createSubCategory(req, res) {
+        if(!req.file){
+            let data_1 = {
+                categoryID: req.body.categoryID,
+                subCategoryID: generateRandomString(8),
+                name: req.body.subCategoryName,
+                imageUrl:`${process.env.PULL_ZONE_URL}category/760dfa0cd3713d985393ea36da0ae3e1.jpg`
+            }
+            await subCategoryModel.create(data_1);
+            return res.json({status:true, msg:"Subcategory was created without image"});
+        }
         let image = fs.readFileSync(req.file.path);
         let key = `category/${req.file.filename}.${req.file.originalname.split('.')[req.file.originalname.split('.').length - 1]}`
         let response = await bunnyStorage.upload(image, key);
@@ -170,6 +203,17 @@ class mainController {
     }
     
     async createSubSubcategory(req, res) {
+        if(!req.file){
+            let data_1 = {
+                categoryID: req.body.categoryID,
+                subCategoryID: req.body.subCategoryID,
+                subSubCategoryID: generateRandomString(8),
+                name: req.body.subSubCategoryName,
+                imageUrl:`${process.env.PULL_ZONE_URL}category/760dfa0cd3713d985393ea36da0ae3e1.jpg`
+            }
+            await subSubCategoryModel.create(data_1);
+            return res.json({status:true, msg:"SubSubCategory was created without image"});
+        }
         let image = fs.readFileSync(req.file.path);
         let key = `category/subCategory/${req.file.filename}.${req.file.originalname.split('.')[req.file.originalname.split('.').length - 1]}`
         let response = await bunnyStorage.upload(image, key);
@@ -190,6 +234,14 @@ class mainController {
         } else {
             res.json({ status: false, msg: "Some error was caused." });
         }
+    }
+
+    async deleteSubCategory(req, res) {
+        let { categoryID, id } = req.params;
+        await subCategoryModel.findOneAndDelete({ subCategoryID:id });
+        await subSubCategoryModel.deleteMany({ subCategoryID: id});
+        await productsModel.deleteMany({subCategoryID: id});
+        res.json({ status: true, msg: "SubCategory was deleted" });
     }
 
     async deleteSubSubCategory(req, res) {
@@ -223,7 +275,9 @@ class mainController {
     async getSubCategory(req, res) {
         let { categoryID } = req.body
         let data = await subCategoryModel.find({ categoryID: categoryID });
-        res.json({ status: true, data });
+        let categoryOne = await categoryModel.findOne({categoryID: categoryID});
+        let categoryName = categoryOne.name;
+        res.json({ status: true, data, categoryName });
     }
     async getSubSubCategory(req, res){
         let { categoryID, subCategoryID} = req.body;
