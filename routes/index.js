@@ -24,6 +24,7 @@ router.get('/signup', function (req, res, next) {
 // POST
 router.post('/createCategory', isLoggedIn, upload.single('categoryImage'), main.createCategory)
 router.post('/getProducts', isLoggedIn, main.getProducts);
+//router.post('/getAllProducts', isLoggedIn, main.getAllProducts);
 router.post('/viewProductDetail', isLoggedIn, main.viewProductDetail);
 router.post('/category/createSubCategory', upload.single('subCategoryImage'), isLoggedIn, main.createSubCategory)
 

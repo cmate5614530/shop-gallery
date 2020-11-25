@@ -63,9 +63,33 @@ class mainController {
     searchAlbum(req, res){
         res.render('pages/search');
     }
+    // async getProducts(req, res) {
+    //     let { categoryID, subCategoryID, subSubCategoryID, page, name } = req.body;
+    //     page = parseInt(page)
+    //     if (page == 1) {
+    //         let category = await categoryModel.findOne({ categoryID })
+    //         let subCategory = await subCategoryModel.findOne({ subCategoryID });
+    //         let subSubCategory = await subSubCategoryModel.findOne({ subSubCategoryID});
+    //         let breadcrumb = {
+    //             category,
+    //             subCategory,
+    //             subSubCategory
+    //         }
+    //         let productsCount = await productsModel.find({ categoryID, subCategoryID, subSubCategoryID }).countDocuments()
+    //         let products = await productsModel.find({ categoryID, subCategoryID, subSubCategoryID }).limit(24)
+    //         res.json({ status: true, data: products, productsCount, breadcrumb });
+    //     } else {
+    //         let products = await productsModel.find({ categoryID, subCategoryID, subSubCategoryID }).skip((page - 1) * 24).limit(24)
+    //         res.json({ status: true, data: products });
+    //     }
+    // }
+
     async getProducts(req, res) {
         let { categoryID, subCategoryID, subSubCategoryID, page, name } = req.body;
         page = parseInt(page)
+        let total = await productsModel.find({ categoryID, subCategoryID, subSubCategoryID });
+        let products = [];
+        let filtered = total.filter(item => item.name.toLowerCase().includes(name) == true);
         if (page == 1) {
             let category = await categoryModel.findOne({ categoryID })
             let subCategory = await subCategoryModel.findOne({ subCategoryID });
@@ -75,14 +99,44 @@ class mainController {
                 subCategory,
                 subSubCategory
             }
-            let productsCount = await productsModel.find({ categoryID, subCategoryID, subSubCategoryID }).countDocuments()
-            let products = await productsModel.find({ categoryID, subCategoryID, subSubCategoryID }).limit(24)
+            let productsCount = 0;
+            
+            if(!name){
+                productsCount = total.length;
+                products = total.slice(0, 24);
+            }else{
+
+                productsCount = filtered.length;
+                products = filtered.slice(0, 24);
+            }
+            //let productsCount = await productsModel.find({ categoryID, subCategoryID, subSubCategoryID }).countDocuments()
+            //let products = await productsModel.find({ categoryID, subCategoryID, subSubCategoryID }).limit(24)
             res.json({ status: true, data: products, productsCount, breadcrumb });
         } else {
-            let products = await productsModel.find({ categoryID, subCategoryID, subSubCategoryID }).skip((page - 1) * 24).limit(24)
+            //let products = await productsModel.find({ categoryID, subCategoryID, subSubCategoryID }).skip((page - 1) * 24).limit(24)
+            if(!name){
+                products = total.slice((page-1)*24, page*24);
+            }else{
+                products = filtered.slice((page-1)*24, page*24);
+            }
             res.json({ status: true, data: products });
         }
     }
+
+    // async getAllProducts(req, res){
+    //     let { categoryID, subCategoryID, subSubCategoryID} = req.body;
+    //     let category = await categoryModel.findOne({ categoryID });
+    //     let subCategory = await subCategoryModel.findOne({ subCategoryID });
+    //     let subSubCategory = await subSubCategoryModel.findOne({ subSubCategoryID });
+    //     let breadcrumb = {
+    //         category,
+    //         subCategory,
+    //         subSubCategory
+    //     };
+    //     let products = await productsModel.find({ categoryID, subCategoryID, subSubCategoryID });
+    //     res.json({ status: true, data: products, breadcrumb });
+    // }
+
     async editProduct(req, res) {
         let { name, description, _id, tag, categoryID, subCategoryID, subSubCategoryID } = req.body;
         productsModel.findOneAndUpdate({ _id }, { name, description, tag, categoryID, subCategoryID, subSubCategoryID }, (err, response) => {

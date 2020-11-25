@@ -13,7 +13,7 @@
     </div>
 
     <div class="text-left">
-        <input type="text" v-model="searchAlbum" id="searchAlbum" name="searchAlbum"  placeholder="Search album...">
+        <input type="text" v-model="searchAlbum" id="searchAlbum" name="searchAlbum" @change="onSearchAlbumNameChange($event)"  placeholder="Search album...">
     </div>
     <br>
 
@@ -60,7 +60,7 @@
       </div>
 
     <div class="row" v-show="!detailMode">
-        <div v-for="(item, index) in filteredList" :key="index" class="col-6 col-sm-4 col-md-2 mb-2">
+        <div v-for="(item, index) in products" :key="index" class="col-6 col-sm-4 col-md-2 mb-2">
             <input type="checkbox" class="checkbox" v-model="checkedAlbums" :value="item._id" style="position:absolute; margin-top: 5px; margin-left:5px; z-index: 100; transform: scale(1.5);"/>
             <div class="card">
                 <div class="view overlay">
@@ -284,6 +284,11 @@
             },
             showMoveToModal(){
                 $("#moveModal").modal();
+            },
+            onSearchAlbumNameChange(event){
+                let name = event.target.value;
+                console.log("search_albumname changed into this:", name);
+                this.getProducts(1);
             },
             onAlbumNameChange(event, _id){
                 let name = event.target.value;
