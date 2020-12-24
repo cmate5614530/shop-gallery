@@ -57,7 +57,7 @@ router.get('/invoice/:id', isLoggedIn, main.download);
 router.post('/searchByTag', main.searchByTag);
 router.get('/search', main.searchAlbum);
 module.exports = router;
-
+//check if the user was signed in or not.
 function isLoggedIn(req, res, next, next2) {
   if (req.isAuthenticated()) {
     return next();
